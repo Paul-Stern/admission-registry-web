@@ -68,9 +68,9 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
 }
 
 func RenderTable(w http.ResponseWriter) {
-	t, ok := Templates["table.tmpl"]
+	t, ok := Templates["table.html"]
 	if !ok {
-		log.Printf("template %s not found", "table.tmpl")
+		log.Printf("template %s not found", "table.html")
 		return
 	}
 	b := new(bytes.Buffer)
