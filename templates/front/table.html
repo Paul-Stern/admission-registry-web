@@ -6,6 +6,20 @@
                 <th scope="col">Фамилия</th>
                 <th scope="col">Имя</th>
                 <th scope="col">Отчество</th>
+                <th scope="col">Дата рождения</th>
             </thead>
+            <tbody>
+                {{range $e := .}}
+                    <tr>
+                        <td>{{$e.ID}}</td>
+                        <td>{{$e.DateTime.Format $e.DTFormat}}</td>
+                        {{$pd := $e.PersonData}}
+                        <td>{{$pd.FirstName}}</td>
+                        <td>{{$pd.MiddleName}}</td>
+                        <td>{{$pd.LastName}}</td>
+                        <td>{{$pd.Birthday.Format $pd.BDFormat}}</td>
+                    </tr>
+                {{end}}
+            </tbody>
         </table>
     <!-- </main> -->

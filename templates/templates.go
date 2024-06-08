@@ -7,6 +7,8 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+
+	"github.com/paul-stern/admission-registry-web/model"
 )
 
 type Page struct {
@@ -74,7 +76,8 @@ func RenderTable(w http.ResponseWriter) {
 		return
 	}
 	b := new(bytes.Buffer)
-	if err := t.Execute(b, nil); err != nil {
+	ents := model.GenEntries()
+	if err := t.Execute(b, ents); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
