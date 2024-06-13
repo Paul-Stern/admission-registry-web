@@ -1,12 +1,20 @@
     <!-- <main class="container"> -->
+        <nav>
+            <ul class="pagination">
+                <li class="page-item"><a href="" class="page-link">Назад</a></li>
+                <li class="page-item"><a href="" class="page-link">Вперед</a></li>
+            </ul>
+        </nav>
         <table class="table table-striped">
             <thead>
-                <th scope="col">№</th>
-                <th scope="col">Дата записи</th>
-                <th scope="col">Фамилия</th>
-                <th scope="col">Имя</th>
-                <th scope="col">Отчество</th>
-                <th scope="col">Дата рождения</th>
+                <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">Дата записи</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Отчество</th>
+                    <th scope="col">Дата рождения</th>
+                </tr>
             </thead>
             <tbody>
                 {{range $e := .}}
@@ -14,10 +22,10 @@
                         <td>{{$e.ID}}</td>
                         <td>{{$e.DateTime.Format $e.DTFormat}}</td>
                         {{$pd := $e.PersonData}}
+                        <td>{{$pd.LastName}}</td>
                         <td>{{$pd.FirstName}}</td>
                         <td>{{$pd.MiddleName}}</td>
-                        <td>{{$pd.LastName}}</td>
-                        <td>{{$pd.Birthday.Format $pd.BDFormat}}</td>
+                        <td>{{$pd.Birthdate.Format $pd.BDFormat}}</td>
                     </tr>
                 {{end}}
             </tbody>

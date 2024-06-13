@@ -69,15 +69,15 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
 	}
 }
 
-func RenderTable(w http.ResponseWriter) {
+func RenderTable(w http.ResponseWriter, es model.Entries) {
 	t, ok := Templates["table.html"]
 	if !ok {
 		log.Printf("template %s not found", "table.html")
 		return
 	}
 	b := new(bytes.Buffer)
-	ents := model.GenEntries()
-	if err := t.Execute(b, ents); err != nil {
+	// ents := model.GenEntries(100)
+	if err := t.Execute(b, es); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

@@ -19,7 +19,7 @@ type PersonalInfo struct {
 	FirstName   string
 	MiddleName  string
 	LastName    string
-	Birthday    time.Time
+	Birthdate   time.Time
 	BDFormat    string
 	Address     string
 	InsuranceID string
@@ -43,22 +43,23 @@ func RandPerson() PersonalInfo {
 	pi.MiddleName = fake.MalePatronymic()
 	pi.LastName = fake.MaleLastName()
 	pi.BDFormat = time.DateOnly
-	pi.Birthday = pi.randBD()
+	pi.Birthdate = pi.randBD()
 	return pi
 }
 
-func RandEntry() RegistryEntry {
+func RandEntry(id int) RegistryEntry {
 	re := RegistryEntry{}
+	re.ID = id
 	re.PersonData = RandPerson()
 	re.DTFormat = time.DateTime
 	re.DateTime = time.Now().AddDate(0, -1*rand.Intn(3), -1*rand.Intn(30))
 	return re
 }
 
-func GenEntries() Entries {
+func GenEntries(n int) Entries {
 	es := Entries{}
-	for i := 0; i < 10; i++ {
-		es = append(es, RandEntry())
+	for i := 0; i < n; i++ {
+		es = append(es, RandEntry(i))
 	}
 	return es
 }
