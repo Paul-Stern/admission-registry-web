@@ -19,7 +19,10 @@ func init() {
 func Journal(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.RawQuery
 	// templates.RenderTable(w, storage[:100])
-	fmt.Fprintf(w, "query: %+v", ParseQuery(q))
+	// fmt.Fprintf(w, "query: %+v", ParseQuery(q))
+	pars := ParseQuery(q)
+	p := pars["p"]
+	fmt.Fprintf(w, "page: %s", p)
 
 }
 
