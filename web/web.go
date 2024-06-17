@@ -1,14 +1,20 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
-	"strings"
+	"strconv"
 
+	"github.com/labstack/echo/v4"
 	"github.com/paul-stern/admission-registry-web/model"
+	"github.com/paul-stern/admission-registry-web/templates"
 )
 
 type Params map[string]string
+
+type Journal struct {
+	Page    int
+	Entries model.Entries
+}
 
 var storage model.Entries
 
@@ -16,19 +22,26 @@ func init() {
 	storage = model.GenEntries(1000)
 }
 
-func Journal(w http.ResponseWriter, r *http.Request) {
-	q := r.URL.RawQuery
-	// templates.RenderTable(w, storage[:100])
-	fmt.Fprintf(w, "query: %+v", ParseQuery(q))
-
-}
-
-func ParseQuery(q string) (pars Params) {
-	pars = make(Params)
-	qslice := strings.Split(q, "&")
-	for _, p := range qslice {
-		s := strings.Split(p, "=")
-		pars[s[0]] = s[1]
+func ShowJournal(c echo.Context) error {
+	l := c.Logger()
+	tt := templates.GetTemplates()
+	l.Print(tt)
+	t := tt["base.html"]
+	c.Echo().Renderer = t
+	l.Print("Logger started")
+	j := Journal{}
+	// Get p query param and convert to it to int
+	p, err := strconv.Atoi(c.QueryParam("p"))
+	if err != nil {
+		// log.Print()
+		l.Printf("strconv err: %s", err)
 	}
-	return
+	j.Page = p
+
+	// return c.String(http.StatusOK, p)
+	d := templates.Page{
+		Title:   "Test",
+		Content: "Hello!",
+	}
+	return c.Render(http.StatusOK, "base.html", d)
 }

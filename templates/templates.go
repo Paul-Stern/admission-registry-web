@@ -1,15 +1,17 @@
 package templates
 
 import (
-	"bytes"
 	"embed"
 	"html/template"
+	"io"
 	"io/fs"
-	"log"
-	"net/http"
 
-	"github.com/paul-stern/admission-registry-web/model"
+	"github.com/labstack/echo/v4"
 )
+
+type Template struct {
+	templates *template.Template
+}
 
 type Page struct {
 	Title   string
@@ -22,8 +24,9 @@ const (
 
 var (
 	//go:embed front/*
-	files     embed.FS
-	Templates map[string]*template.Template
+	files embed.FS
+	// Templates map[string]*template.Template
+	Templates map[string]*Template
 )
 
 func init() {
@@ -32,7 +35,7 @@ func init() {
 
 func LoadTemplates() error {
 	if Templates == nil {
-		Templates = make(map[string]*template.Template)
+		Templates = make(map[string]*Template)
 	}
 	tmpFiles, err := fs.ReadDir(files, templatesDir)
 	if err != nil {
@@ -51,44 +54,61 @@ func LoadTemplates() error {
 			return err
 		}
 
-		Templates[tmpl.Name()] = pt
+		// Templates[tmpl.Name()] = pt
+		Templates[tmpl.Name()] = &Template{templates: pt}
 	}
 	return nil
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
-	t, ok := Templates[tmpl+".html"]
-	if !ok {
-		log.Printf("template %s not found", tmpl+".html")
-		return
+/*
+	func RenderTemplate(w http.ResponseWriter, tmpl string, data any) {
+		t, ok := Templates[tmpl+".html"]
+		if !ok {
+			log.Printf("template %s not found", tmpl+".html")
+			return
+		}
+
+		if err := t.Execute(w, data); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 
-	if err := t.Execute(w, data); err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	func RenderTable(w http.ResponseWriter, es model.Entries) {
+		t, ok := Templates["table.html"]
+		if !ok {
+			log.Printf("template %s not found", "table.html")
+			return
+		}
+		b := new(bytes.Buffer)
+		// ents := model.GenEntries(100)
+		if err := t.Execute(b, es); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		p := Page{
+			Title:   "Журнал",
+			Content: template.HTML(b.String()),
+		}
+
+		RenderTemplate(w, "base", p)
 	}
+*/
+func (t *Template) Render(w io.Writer, name string, data any, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
+	// t, ok := Templates[tmpl+".html"]
+	// if !ok {
+	// 	log.Printf("template %s not found", tmpl+".html")
+	// 	return
+	// }
+
+	// if err := t.Execute(w, data); err != nil {
+	// 	log.Println(err)
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// }
+
 }
 
-func RenderTable(w http.ResponseWriter, es model.Entries) {
-	t, ok := Templates["table.html"]
-	if !ok {
-		log.Printf("template %s not found", "table.html")
-		return
-	}
-	b := new(bytes.Buffer)
-	// ents := model.GenEntries(100)
-	if err := t.Execute(b, es); err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	p := Page{
-		Title:   "Журнал",
-		Content: template.HTML(b.String()),
-	}
-
-	RenderTemplate(w, "base", p)
-}
-
-func GetTmplts() map[string]*template.Template {
+func GetTemplates() map[string]*Template {
 	return Templates
 }
