@@ -3,9 +3,12 @@ module github.com/paul-stern/admission-registry-web
 go 1.21.1
 
 require (
+	github.com/icrowley/fake v0.0.0-20221112152111-d7b7e2276db2
+	github.com/labstack/echo/v4 v4.12.0
+)
+
+require (
 	github.com/corpix/uarand v0.0.0-20170723150923-031be390f409 // indirect
-	github.com/icrowley/fake v0.0.0-20221112152111-d7b7e2276db2 // indirect
-	github.com/labstack/echo/v4 v4.12.0 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
