@@ -5,6 +5,7 @@ go 1.21.1
 require (
 	github.com/icrowley/fake v0.0.0-20221112152111-d7b7e2276db2
 	github.com/labstack/echo/v4 v4.12.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
