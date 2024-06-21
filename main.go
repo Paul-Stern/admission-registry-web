@@ -13,7 +13,7 @@ func main() {
 	e.Debug = true
 	c, err := config.Read()
 	if err != nil {
-		e.Logger.Panic("Config error: ", err)
+		e.Logger.Fatal("Config error: ", err)
 	}
 	e.GET("/", web.ShowJournal)
 	e.Logger.Fatal(e.StartTLS(
