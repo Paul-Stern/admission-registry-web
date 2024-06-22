@@ -2,9 +2,11 @@
         <nav>
             <ul class="pagination">
                 <li class="page-item"><a href="" class="page-link">Назад</a></li>
-                <li class="page-item"><a href="/?p=1" class="page-link">1</a></li>
-                <li class="page-item"><a href="/?p=2" class="page-link">2</a></li>
+                {{range $p := .PageRange}}
+                <li class="page-item"><a href="/?p={{$p}}" class="page-link">{{$p}}</a></li>
+                {{end}}
                 <li class="page-item"><a href="" class="page-link">Вперед</a></li>
+
             </ul>
         </nav>
         <table class="table table-striped">
@@ -19,7 +21,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{range $e := .}}
+                {{range $e := .Entries}}
                     <tr>
                         <td>{{$e.ID}}</td>
                         <td>{{$e.DateTime.Format $e.DTFormat}}</td>
@@ -32,4 +34,12 @@
                 {{end}}
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination">
+                {{range $p := .PageRange}}
+                <li class="page-item"><a href="/?p={{$p}}" class="page-link">{{$p}}</a></li>
+                {{end}}
+            </ul>
+        </nav>
+
     <!-- </main> -->

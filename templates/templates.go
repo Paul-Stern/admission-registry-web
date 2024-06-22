@@ -23,6 +23,7 @@ type WebPage struct {
 
 type Table struct {
 	model.Entries
+	Pages int
 	Template
 }
 
@@ -34,6 +35,12 @@ var (
 	//go:embed front/*
 	files     embed.FS
 	Templates map[string]*Template
+
+	funcMap = map[string]template.FuncMap{
+		"table.html": {
+			"PageRange": Table.PageRange,
+		},
+	}
 )
 
 func init() {
@@ -55,6 +62,8 @@ func LoadTemplates() error {
 		}
 
 		t := template.New(tmpl.Name())
+
+		t.Funcs(funcMap[t.Name()])
 
 		pt, err := t.ParseFS(files, templatesDir+"/"+tmpl.Name())
 		if err != nil {
@@ -83,21 +92,33 @@ func (t Template) Name() string {
 	return t.templates.Name()
 }
 
-func NewTable(e model.Entries, c echo.Context) Table {
+func NewTable(e model.Entries, p int, c echo.Context) Table {
 	return Table{
 		Entries:  e,
+		Pages:    p,
 		Template: *GetTemplate("table.html", c),
 	}
 }
 
 func (t Table) HTML(c echo.Context) template.HTML {
 	b := new(bytes.Buffer)
-	t.Render(b, t.Template.Name(), t.Entries, c)
+	t.Render(b, t.Template.Name(), t, c)
 	return template.HTML(b.String())
 }
 
-func NewWebPage(title string, e model.Entries, c echo.Context) WebPage {
-	t := NewTable(e, c)
+func (t Table) PageRange() []int {
+	p := make([]int, t.Pages)
+	// for n := range t.Pages {
+
+	// }
+	for n := 0; n < t.Pages; n++ {
+		p[n] = n + 1
+	}
+	return p
+}
+
+func NewWebPage(title string, e model.Entries, p int, c echo.Context) WebPage {
+	t := NewTable(e, p, c)
 	wp := WebPage{
 		Title:    title,
 		Template: *GetTemplate("base.html", c),

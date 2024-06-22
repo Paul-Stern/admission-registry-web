@@ -18,15 +18,18 @@ func init() {
 func ShowJournal(c echo.Context) error {
 	// l := c.Logger()
 	// l.Print("Logger started")
+	lp := LastPage(c, entries, 100)
 	es, err := Page(c, entries, 100)
 	if err != nil {
 		return err
 	}
-	wp := templates.NewWebPage("Журнал", es, c)
+	wp := templates.NewWebPage("Журнал", es, lp, c)
 	c.Echo().Renderer = &wp.Template
 	return c.Render(http.StatusOK, wp.Name(), wp)
 }
 
+// Page returns Entries for one page of journal and an error
+// It takes Context, Entries and n number of entries per page
 func Page(c echo.Context, es model.Entries, n int) (model.Entries, error) {
 	var err error
 	var p int
@@ -42,10 +45,10 @@ func Page(c echo.Context, es model.Entries, n int) (model.Entries, error) {
 	}
 	// Define start and end of the Entries slice
 	s := (p - 1) * n
-	e := s + 100
+	e := s + n
 	return es[s:e], err
 }
 
 func LastPage(c echo.Context, es model.Entries, n int) int {
-	return len(es) % n
+	return len(es) / n
 }
