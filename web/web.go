@@ -33,16 +33,11 @@ func ShowJournal(c echo.Context) error {
 func Page(c echo.Context, es model.Entries, n int) (model.Entries, error) {
 	var err error
 	var p int
-	ps := c.QueryParam("p")
-	if ps == "" {
-		p = 1
-	} else {
-		p, err = strconv.Atoi(ps)
-		if err != nil {
-			return model.Entries{}, err
-		}
-
+	p, err = ParseParam(c, "page")
+	if err != nil {
+		return model.Entries{}, err
 	}
+
 	// Define start and end of the Entries slice
 	s := (p - 1) * n
 	e := s + n
@@ -51,4 +46,15 @@ func Page(c echo.Context, es model.Entries, n int) (model.Entries, error) {
 
 func LastPage(c echo.Context, es model.Entries, n int) int {
 	return len(es) / n
+}
+
+// ParseParam parses integer named parameter
+func ParseParam(c echo.Context, name string) (p int, err error) {
+	ps := c.QueryParam(name)
+	if ps == "" {
+		p = 1
+	} else {
+		p, err = strconv.Atoi(ps)
+	}
+	return
 }
