@@ -23,7 +23,8 @@ type WebPage struct {
 
 type Table struct {
 	model.Entries
-	Pages int
+	Pages      int
+	Quantities []int
 	Template
 }
 
@@ -39,6 +40,7 @@ var (
 	funcMap = map[string]template.FuncMap{
 		"table.html": {
 			"PageRange": Table.PageRange,
+			"Count":     Table.Count,
 		},
 	}
 )
@@ -94,9 +96,10 @@ func (t Template) Name() string {
 
 func NewTable(e model.Entries, p int, c echo.Context) Table {
 	return Table{
-		Entries:  e,
-		Pages:    p,
-		Template: *GetTemplate("table.html", c),
+		Entries:    e,
+		Pages:      p,
+		Quantities: []int{20, 50, 100},
+		Template:   *GetTemplate("table.html", c),
 	}
 }
 
@@ -125,4 +128,8 @@ func NewWebPage(title string, e model.Entries, p int, c echo.Context) WebPage {
 		Content:  t.HTML(c),
 	}
 	return wp
+}
+
+func (t Table) Count() int {
+	return len(t.Entries)
 }

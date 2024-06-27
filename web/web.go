@@ -18,8 +18,11 @@ func init() {
 func ShowJournal(c echo.Context) error {
 	// l := c.Logger()
 	// l.Print("Logger started")
-	lp := LastPage(c, entries, 100)
-	es, err := Page(c, entries, 100)
+	lp, err := LastPage(c, entries)
+	if err != nil {
+		return err
+	}
+	es, err := Page(c, entries)
 	if err != nil {
 		return err
 	}
@@ -30,10 +33,14 @@ func ShowJournal(c echo.Context) error {
 
 // Page returns Entries for one page of journal and an error
 // It takes Context, Entries and n number of entries per page
-func Page(c echo.Context, es model.Entries, n int) (model.Entries, error) {
+func Page(c echo.Context, es model.Entries) (model.Entries, error) {
 	var err error
 	var p int
 	p, err = ParseParam(c, "page")
+	if err != nil {
+		return model.Entries{}, err
+	}
+	n, err := ParseParam(c, "quantity")
 	if err != nil {
 		return model.Entries{}, err
 	}
@@ -44,15 +51,18 @@ func Page(c echo.Context, es model.Entries, n int) (model.Entries, error) {
 	return es[s:e], err
 }
 
-func LastPage(c echo.Context, es model.Entries, n int) int {
-	return len(es) / n
+func LastPage(c echo.Context, es model.Entries) (int, error) {
+	q, err := ParseParam(c, "quantity")
+	return len(es) / q, err
 }
 
 // ParseParam parses integer named parameter
 func ParseParam(c echo.Context, name string) (p int, err error) {
 	ps := c.QueryParam(name)
-	if ps == "" {
+	if ps == "" && name == "page" {
 		p = 1
+	} else if ps == "" && name == "quantity" {
+		p = 50
 	} else {
 		p, err = strconv.Atoi(ps)
 	}
