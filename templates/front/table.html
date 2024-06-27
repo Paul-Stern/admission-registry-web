@@ -12,10 +12,17 @@
             </select>
         </form>
         <nav>
-            <ul class="pagination">
+            <ul class="pagination justify-content-center">
                 <li class="page-item"><a href="" class="page-link">Назад</a></li>
+                {{$cp := .CurrentPage}}
                 {{range $p := .PageRange}}
-                <li class="page-item"><a href="/?page={{$p}}&quantity={{$c}}" class="page-link">{{$p}}</a></li>
+                <li class="page-item
+                    {{if eq $p $cp}}
+                    active
+                    {{end}}
+                    ">
+                    <a href="/?page={{$p}}&quantity={{$c}}" class="page-link">{{$p}}</a>
+                </li>
                 {{end}}
                 <li class="page-item"><a href="" class="page-link">Вперед</a></li>
 

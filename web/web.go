@@ -26,7 +26,11 @@ func ShowJournal(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	wp := templates.NewWebPage("Журнал", es, lp, c)
+	cp, err := ParseParam(c, "page")
+	if err != nil {
+		return err
+	}
+	wp := templates.NewWebPage("Журнал", es, lp, cp, c)
 	c.Echo().Renderer = &wp.Template
 	return c.Render(http.StatusOK, wp.Name(), wp)
 }

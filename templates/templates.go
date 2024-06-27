@@ -23,8 +23,9 @@ type WebPage struct {
 
 type Table struct {
 	model.Entries
-	Pages      int
-	Quantities []int
+	Pages       int
+	CurrentPage int
+	Quantities  []int
 	Template
 }
 
@@ -94,12 +95,13 @@ func (t Template) Name() string {
 	return t.templates.Name()
 }
 
-func NewTable(e model.Entries, p int, c echo.Context) Table {
+func NewTable(e model.Entries, p int, cp int, c echo.Context) Table {
 	return Table{
-		Entries:    e,
-		Pages:      p,
-		Quantities: []int{20, 50, 100},
-		Template:   *GetTemplate("table.html", c),
+		Entries:     e,
+		Pages:       p,
+		CurrentPage: cp,
+		Quantities:  []int{20, 50, 100},
+		Template:    *GetTemplate("table.html", c),
 	}
 }
 
@@ -120,8 +122,8 @@ func (t Table) PageRange() []int {
 	return p
 }
 
-func NewWebPage(title string, e model.Entries, p int, c echo.Context) WebPage {
-	t := NewTable(e, p, c)
+func NewWebPage(title string, e model.Entries, p int, cp int, c echo.Context) WebPage {
+	t := NewTable(e, p, cp, c)
 	wp := WebPage{
 		Title:    title,
 		Template: *GetTemplate("base.html", c),
