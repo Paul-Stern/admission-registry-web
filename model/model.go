@@ -1,7 +1,9 @@
 package model
 
 import (
+	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/icrowley/fake"
@@ -47,6 +49,7 @@ func RandPerson() PersonalInfo {
 		*new(time.Time),
 	)
 	pi.Birthdate = pi.randBD()
+	pi.InsuranceID = RandIns()
 	return pi
 }
 
@@ -84,4 +87,18 @@ func GenEntries(n int) Entries {
 		es = append(es, RandEntry(i))
 	}
 	return es
+}
+
+func RandIns() string {
+	// Allocate memory for the slice in advance
+	islice := make([]string, 20)
+	// Insurance ID contains 16 numerals so we take 16 steps
+	for i := 0; i < 16; i++ {
+		if i%4 == 0 {
+			islice = append(islice, " ")
+		}
+		n := fmt.Sprint(rand.Intn(10))
+		islice = append(islice, n)
+	}
+	return strings.Join(islice, "")
 }

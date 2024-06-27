@@ -18,6 +18,7 @@
                     <th scope="col">Имя</th>
                     <th scope="col">Отчество</th>
                     <th scope="col">Дата рождения</th>
+                    <th scope="col">Страховой полис</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,7 @@
                         <td>{{$pd.FirstName}}</td>
                         <td>{{$pd.MiddleName}}</td>
                         <td>{{$pd.Birthdate.Format $pd.BDFormat}}</td>
+                        <td>{{$pd.InsuranceID}}</td>
                     </tr>
                 {{end}}
             </tbody>
