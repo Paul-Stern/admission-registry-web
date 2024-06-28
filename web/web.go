@@ -63,7 +63,7 @@ func LastPage(c echo.Context, es model.Entries) (int, error) {
 // ParseParam parses integer named parameter
 func ParseParam(c echo.Context, name string) (p int, err error) {
 	ps := c.QueryParam(name)
-	if ps == "" && name == "page" {
+	if (ps == "" || ps == "0") && name == "page" {
 		p = 1
 	} else if ps == "" && name == "quantity" {
 		p = 50

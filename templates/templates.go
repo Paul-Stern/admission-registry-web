@@ -111,6 +111,7 @@ func (t Table) HTML(c echo.Context) template.HTML {
 	return template.HTML(b.String())
 }
 
+// TODO: Improve loops' logic and simplify
 func (t Table) PageRange() []int {
 	// Limit sets the amount pf page link shown on page
 	limit := 18
@@ -132,10 +133,15 @@ func (t Table) PageRange() []int {
 			p[mid-n+1] = t.CurrentPage - n + 1
 			p[mid+n-1] = t.CurrentPage + n - 1
 		}
+		// 0 is a special value to disable the button
+		if t.CurrentPage > mid+1 {
+			p[1] = 0
+		}
 	case t.CurrentPage >= (t.Pages - limit):
 		for n := 0; n < limit; n++ {
 			p[n+1] = t.Pages - limit + n
 		}
+		p[1] = 0
 	}
 	return p
 }
