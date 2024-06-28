@@ -112,12 +112,30 @@ func (t Table) HTML(c echo.Context) template.HTML {
 }
 
 func (t Table) PageRange() []int {
-	p := make([]int, t.Pages)
+	// Limit sets the amount pf page link shown on page
+	limit := 18
+	p := make([]int, limit+2)
 	// for n := range t.Pages {
 
 	// }
-	for n := 0; n < t.Pages; n++ {
-		p[n] = n + 1
+	p[0] = 1
+	p[limit+1] = t.Pages
+	mid := limit / 2
+	switch {
+	case t.Pages < limit || t.CurrentPage < mid:
+		for n := 0; n < limit; n++ {
+			p[n] = n + 1
+		}
+	case t.CurrentPage+mid < t.Pages:
+		p[mid] = t.CurrentPage
+		for n := mid; n >= 0; n-- {
+			p[mid-n+1] = t.CurrentPage - n + 1
+			p[mid+n-1] = t.CurrentPage + n - 1
+		}
+	case t.CurrentPage >= (t.Pages - limit):
+		for n := 0; n < limit; n++ {
+			p[n+1] = t.Pages - limit + n
+		}
 	}
 	return p
 }
