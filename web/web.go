@@ -15,6 +15,12 @@ func init() {
 	entries = model.GenEntries(1000)
 }
 
+type Context struct {
+	context  echo.Context
+	page     int
+	quantity int
+}
+
 func ShowJournal(c echo.Context) error {
 	// l := c.Logger()
 	// l.Print("Logger started")
@@ -71,4 +77,42 @@ func ParseParam(c echo.Context, name string) (p int, err error) {
 		p, err = strconv.Atoi(ps)
 	}
 	return
+}
+
+func NewContext(c echo.Context) (nc Context) {
+	nc.context = c
+	return
+}
+
+// func (c *Context) Page (err error)
+
+// TODO: Reimplement with regexps?
+func (c *Context) QueryParams() (err error) {
+	// validPage := regexp.MustCompile(`%d`)
+	m := map[string]struct{}{
+		"page" : {"d"}
+	}
+	ps := c.context.QueryParam("page")
+	if ps == "" {
+		c.page = 1
+	}
+	n, err := strconv.Atoi(ps)
+	if err != nil {
+		return
+	}
+	c.page = c.AbsInt(n)
+	ps = c.context.QueryParam("quantity")
+	if ps == "" {
+		c.quantity = 50
+	}
+	n, err = strconv.Atoi(ps)
+	c.quantity = c.AbsInt(n)
+	return
+}
+
+func (c *Context) AbsInt(n int) int {
+	if n < 0 {
+		n = -n
+	}
+	return n
 }
