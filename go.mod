@@ -1,6 +1,6 @@
 module github.com/paul-stern/admission-registry-web
 
-go 1.21.1
+go 1.20
 
 require (
 	github.com/icrowley/fake v0.0.0-20221112152111-d7b7e2276db2
