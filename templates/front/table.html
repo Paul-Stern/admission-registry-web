@@ -20,8 +20,17 @@
                     {{if eq $p $cp}}
                     active
                     {{end}}
+                    {{if eq $p 0}}
+                    disabled
+                    {{end}}
                     ">
-                    <a href="/?page={{$p}}&quantity={{$c}}" class="page-link">{{$p}}</a>
+                    <a href="/?page={{$p}}&quantity={{$c}}" class="page-link">
+                        {{if eq $p 0}}
+                        &hellip;
+                        {{else}}
+                        {{$p}}
+                        {{end}}
+                    </a>
                 </li>
                 {{end}}
                 <li class="page-item"><a href="" class="page-link">Вперед</a></li>

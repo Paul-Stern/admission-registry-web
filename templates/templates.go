@@ -122,7 +122,7 @@ func (t Table) PageRange() []int {
 	p[limit+1] = t.Pages
 	mid := limit / 2
 	switch {
-	case t.Pages < limit || t.CurrentPage < mid:
+	case t.Pages < limit || t.CurrentPage <= mid+1:
 		for n := 0; n < limit; n++ {
 			p[n] = n + 1
 		}
@@ -132,10 +132,14 @@ func (t Table) PageRange() []int {
 			p[mid-n+1] = t.CurrentPage - n + 1
 			p[mid+n-1] = t.CurrentPage + n - 1
 		}
+		// 0 is a speacial value to disable the button
+		p[1] = 0
 	case t.CurrentPage >= (t.Pages - limit):
 		for n := 0; n < limit; n++ {
 			p[n+1] = t.Pages - limit + n
 		}
+		// 0 is a speacial value to disable the button
+		p[1] = 0
 	}
 	return p
 }
