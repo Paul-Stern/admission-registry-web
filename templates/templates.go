@@ -16,8 +16,10 @@ type Template struct {
 }
 
 type WebPage struct {
-	Title   string
-	Content template.HTML
+	Title     string
+	BodyClass string
+	MainClass string
+	Content   template.HTML
 	Template
 }
 
@@ -146,12 +148,13 @@ func (t Table) PageRange() []int {
 	return p
 }
 
-func NewWebPage(title string, e model.Entries, p int, cp int, c echo.Context) WebPage {
-	t := NewTable(e, p, cp, c)
+// TODO: Add BodyClass and MainClass initialization
+func NewWebPage(title string, cont template.HTML, c echo.Context) WebPage {
+	// t := NewTable(e, p, cp, c)
 	wp := WebPage{
 		Title:    title,
 		Template: *GetTemplate("base.html", c),
-		Content:  t.HTML(c),
+		Content:  cont,
 	}
 	return wp
 }

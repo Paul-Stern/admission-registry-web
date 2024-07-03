@@ -16,6 +16,7 @@ func main() {
 		e.Logger.Fatal("Config error: ", err)
 	}
 	e.GET("/", web.ShowJournal)
+	e.GET("/signup", web.SignUp)
 	e.Logger.Fatal(e.StartTLS(
 		fmt.Sprintf("%s:%s", c.Server.Addr, c.Server.Port),
 		c.Server.Cert,

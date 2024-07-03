@@ -1,18 +1,36 @@
 package web
 
 import (
+	"io"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/paul-stern/admission-registry-web/config"
 	"github.com/paul-stern/admission-registry-web/model"
 	"github.com/paul-stern/admission-registry-web/templates"
 )
 
 var entries model.Entries
 
+type Body struct {
+	io.Reader
+}
+
 func init() {
 	entries = model.GenEntries(1000)
+}
+
+func SignUp(c echo.Context) error {
+	l := config.Node("hello")
+	// http.Get(config.Conf)
+	r, err := http.Get(l)
+	if err != nil {
+		return err
+	}
+	b := Body{r.Body}
+	// return c.JSON(http.StatusOK, r.Body)
+	return c.String(http.StatusOK, b.String())
 }
 
 func ShowJournal(c echo.Context) error {
@@ -30,7 +48,8 @@ func ShowJournal(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	wp := templates.NewWebPage("Журнал", es, lp, cp, c)
+	tbl := templates.NewTable(es, lp, cp, c)
+	wp := templates.NewWebPage("Журнал", tbl.HTML(c), c)
 	c.Echo().Renderer = &wp.Template
 	return c.Render(http.StatusOK, wp.Name(), wp)
 }
@@ -71,4 +90,12 @@ func ParseParam(c echo.Context, name string) (p int, err error) {
 		p, err = strconv.Atoi(ps)
 	}
 	return
+}
+
+func (body Body) String() string {
+	b, err := io.ReadAll(body)
+	if err != nil {
+		return ""
+	}
+	return string(b)
 }
